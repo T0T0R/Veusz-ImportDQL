@@ -1,1 +1,3 @@
 # Veusz-ImportDQL
+
+This software is a plugin for the Veusz software. It is designed to load DQL files produced by the X-ray diffractometer D-8 Brucker. DQL files are text files containing experimental parameters and data. This plugin loads a DQL file, and imports only the information stored below the [Data] tag. Two datasets are created: one containing the 2-theta angle of diffraction and one containing the corresponding intensity of the diffracted beam.
