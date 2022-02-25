@@ -97,7 +97,7 @@ class ImportDQL(ImportPlugin):
         import numpy as np
         """Actually import data
         params is a ImportPluginParams object.
-        Return a list of ImportDataset1D, ImportDataset2D objects
+        Return a list of ImportDataset1D objects.
         """
         f = params.openFileWithEncoding()
 
