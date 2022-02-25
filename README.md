@@ -9,4 +9,11 @@ Veusz has to be restarted in order to load the plugin.
 2. Use the plugin:
 Data -> Import -> DQL
 
-![](Untitled.png)
+![](ReadmeImages/Untitled.png)
+
+3. Plot the datasets:
+Insert -> Add xy. In the Properties window of the xy widget, select x=Angle and y=PSD (Position-sensitive-detector). Then select the "None" marker in the Formatting window.
+
+In the Properties window of the x-axix and y-axis widgets, fill in the labels accordingly. Then in their Formatting window select Auto-range to "Exact".
+
+![](ReadmeImages/Untitled2.png)
