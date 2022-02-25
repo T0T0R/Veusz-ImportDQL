@@ -19,7 +19,7 @@
 
 # Author: Arthur Langlard, arthur.langlard@universite-paris-saclay.fr
 # Start of the project: 24-02-2022
-# Last modification: 24-02-2022
+# Last modification: 25-02-2022
 #
 # This software is a plugin for the Veusz software.
 # it is designed to load DQL files produced by the X-ray diffractometer
@@ -50,14 +50,22 @@ class ImportDQL(ImportPlugin):
 
         data = []
         
-        for line in file:
-            if line == '[Data]\r\n' or line == '[Data]\n':  # Only interested in the [Data] part.
-                dataFlag = True
-            
-            if dataFlag:
-                data.append(self.formatLine(line).split(",")[:-1])  # Remove the \n character at the end of the line.
+        try:
+            for line in file:
+                if line == '[Data]\r\n' or line == '[Data]\n':  # Only interested in the [Data] part.
+                    dataFlag = True
+                
+                if dataFlag:
+                    data.append(self.formatLine(line).split(",")[:-1])  # Remove the \n character at the end of the line.
 
-        return (data[1], np.array(data[2:]))    # Return (Names, Data).
+            output = (data[1], np.array(data[2:]))# Return (Names, Data).
+
+        except:
+            print("Cannot open file.")
+            output = None
+
+        return output
+
 
 
     def __init__(self):
@@ -69,12 +77,19 @@ class ImportDQL(ImportPlugin):
         import numpy as np
         f = params.openFileWithEncoding()
 
+        allowImport = False
         npArray = self.getNpArray(f)
-        longString = str(npArray[0][0]) + ',' + str(npArray[0][1]) + '\n'
-        for data in npArray[1]:
-            longString = longString + str(data[0]) + ',' + str(data[0]) + '\n'
 
-        return (longString, True)
+        if npArray != None: # If the data was loaded, display it.
+            allowImport = True
+            longString = str(npArray[0][0]) + ',' + str(npArray[0][1]) + '\n'
+            for data in npArray[1]:
+                longString = longString + str(data[0]) + ',' + str(data[0]) + '\n'
+
+        else:
+            longString = "File cannot be displayed"
+
+        return (longString, allowImport)
     
 
     def doImport(self, params):
