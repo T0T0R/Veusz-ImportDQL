@@ -56,12 +56,15 @@ class ImportDQL(ImportPlugin):
                     dataFlag = True
                 
                 if dataFlag:
-                    data.append(self.formatLine(line).split(",")[:-1])  # Remove the \n character at the end of the line.
+                    line = self.formatLine(line).split(",")
+
+                    if line[-1] == "\n" or line[-1]=='':# Remove the \n character at the end of the line.
+                        line.pop(-1)
+                    data.append(line)  
 
             output = (data[1], np.array(data[2:]))# Return (Names, Data).
 
         except:
-            print("Cannot open file.")
             output = None
 
         return output
