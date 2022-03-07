@@ -19,7 +19,7 @@
 
 # Author: Arthur Langlard, arthur.langlard@universite-paris-saclay.fr
 # Start of the project: 24-02-2022
-# Last modification: 25-02-2022
+# Last modification: 07-03-2022
 #
 # This software is a plugin for the Veusz software.
 # it is designed to load DQL files produced by the X-ray diffractometer
@@ -58,11 +58,22 @@ class ImportDQL(ImportPlugin):
                 if dataFlag:
                     line = self.formatLine(line).split(",")
 
-                    if line[-1] == "\n" or line[-1]=='':# Remove the \n character at the end of the line.
+                    # When "Foo,Bar,".split(',') == ["Foo", "Bar", ""] or
+                    # "Foo,Bar,\n".split(',') == ["Foo", "Bar", "\n"] generates a
+                    # useless item, remove this last one.
+                    if line[-1] == "\n" or line[-1] == '':
                         line.pop(-1)
-                    data.append(line)  
+                    
+                    data.append(line)
+                
+            # "Xname, Yname" generates data[1] == ["Xname", "Yname\n"]
+            # Need to remove the '\n' character.
+            datasetNamesTemp = data[1]
+            datasetNames = []
+            for name in datasetNamesTemp:
+                datasetNames.append( name.splitlines()[0] )
 
-            output = (data[1], np.array(data[2:]))# Return (Names, Data).
+            output = (datasetNames, np.array(data[2:]))  # Return (Names, Data).
 
         except:
             output = None
@@ -98,7 +109,7 @@ class ImportDQL(ImportPlugin):
     def doImport(self, params):
         from veusz.plugins import ImportDataset1D
         import numpy as np
-        """Actually import data
+        """Actually imports data.
         params is a ImportPluginParams object.
         Return a list of ImportDataset1D objects.
         """
