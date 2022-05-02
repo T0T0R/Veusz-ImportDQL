@@ -42,7 +42,7 @@ class ImportDQL(ImportPlugin):
 
     def formatLine(self, line):
         # Removal of all spaces.
-        return line.replace(' ', '')
+        return line.replace(' ', '').splitlines()[0]
     
     def getNpArray(self, file):
         import numpy as np
@@ -57,6 +57,7 @@ class ImportDQL(ImportPlugin):
                 
                 if dataFlag:
                     line = self.formatLine(line).split(",")
+                    #raise
 
                     # When "Foo,Bar,".split(',') == ["Foo", "Bar", ""] or
                     # "Foo,Bar,\n".split(',') == ["Foo", "Bar", "\n"] generates a
@@ -66,13 +67,8 @@ class ImportDQL(ImportPlugin):
                     
                     data.append(line)
                 
-            # "Xname, Yname" generates data[1] == ["Xname", "Yname\n"]
-            # Need to remove the '\n' character.
-            datasetNamesTemp = data[1]
-            datasetNames = []
-            for name in datasetNamesTemp:
-                datasetNames.append( name.splitlines()[0] )
 
+            datasetNames = data[1]
             output = (datasetNames, np.array(data[2:]))  # Return (Names, Data).
 
         except:
@@ -98,7 +94,7 @@ class ImportDQL(ImportPlugin):
             allowImport = True
             longString = str(npArray[0][0]) + ',' + str(npArray[0][1]) + '\n'
             for data in npArray[1]:
-                longString = longString + str(data[0]) + ',' + str(data[0]) + '\n'
+                longString = longString + str(data[0]) + ',' + str(data[1]) + '\n'
 
         else:
             longString = "File cannot be displayed"
